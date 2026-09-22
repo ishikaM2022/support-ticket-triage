@@ -1,0 +1,16 @@
+# Allow only the application and model artifacts into the build context.
+**
+!Dockerfile
+!requirements-docker.txt
+!app.py
+!classifier.py
+!database.py
+!urgency.py
+!artifacts/
+!artifacts/**
+# Defense against accidental secrets or ticket data inside artifacts.
+**/.env*
+**/secrets.toml
+**/*.db
+**/*.db-*
+**/__pycache__/

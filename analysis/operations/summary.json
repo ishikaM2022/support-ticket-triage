@@ -1,0 +1,8 @@
+{
+  "generated_at_utc": "2026-09-22T01:36:48.294171+00:00",
+  "loaded_records": 8,
+  "source_rows": 8,
+  "valid_resolution_durations": 1,
+  "data_quality_exclusions": {},
+  "interpretation": "Observed app activity only, including demo/test tickets. Durations are descriptive, not forecasts. Resolved-only averages exclude still-open tickets and are subject to selection bias."
+}

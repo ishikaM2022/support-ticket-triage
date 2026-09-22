@@ -1,0 +1,17 @@
+{
+  "min_similarity": 0.8,
+  "min_agreement": 0.8,
+  "team_by_category": {
+    "ACCOUNT": "Account Support",
+    "ORDER": "Order Support",
+    "REFUND": "Billing Support",
+    "CONTACT": "General Support",
+    "INVOICE": "Billing Support",
+    "PAYMENT": "Billing Support",
+    "FEEDBACK": "Customer Experience",
+    "DELIVERY": "Shipping Support",
+    "SHIPPING": "Shipping Support",
+    "SUBSCRIPTION": "Account Support",
+    "CANCEL": "Billing Support"
+  }
+}

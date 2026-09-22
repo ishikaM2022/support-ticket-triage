@@ -1,0 +1,15 @@
+{
+  "source_filename": "customer_support_tickets.csv",
+  "source_sha256": "b06a9cde84da65db388bd964d75f88ee1eed96607cf75d0c35f09c3f11bf8bea",
+  "rows": 8469,
+  "unique_ticket_ids": 8469,
+  "closed": 2769,
+  "unresolved": 5700,
+  "closed_with_parseable_timestamp_pairs": 2769,
+  "closed_with_missing_timestamp_pairs": 0,
+  "closed_with_unparseable_timestamp_pairs": 0,
+  "resolution_before_first_response": 1365,
+  "negative_interval_share_of_parseable_closed": 0.49295774647887325,
+  "creation_timestamp_available": false,
+  "interpretation": "Sample snapshot only. Source priority labels are not validated urgency ground truth. No creation-to-resolution durations can be calculated."
+}

@@ -1,0 +1,15 @@
+# Runtime dependencies pinned to your supplied local versions.
+# CPU torch is installed separately from its official index by Dockerfile.
+torch==2.14.0+cpu
+streamlit==1.63.0
+pandas==3.0.5
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.1
+joblib==1.6.0
+sentence-transformers==6.0.1
+transformers==5.17.0
+huggingface_hub==1.31.0
+tokenizers==0.23.2
+safetensors==0.8.0
+portkey-ai==2.3.4
