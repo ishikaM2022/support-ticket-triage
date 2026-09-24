@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: support-ticket-triage
+    runtime: docker
+    plan: free
+    healthCheckPath: /_stcore/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: PUBLIC_DEMO
+        value: "true"
+      - key: TRIAGE_DB_PATH
+        value: /tmp/triage-demo.db

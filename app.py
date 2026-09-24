@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import streamlit as st
 
@@ -21,6 +23,14 @@ from database import (
 )
 from urgency import suggest_urgency
 
+
+PUBLIC_DEMO = os.environ.get("PUBLIC_DEMO", "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+}
+GITHUB_URL = "https://github.com/ishikaM2022/support-ticket-triage"
+
 st.set_page_config(
     page_title="Support Ticket Triage",
     page_icon="🎫",
@@ -40,6 +50,13 @@ st.caption(
     "and route tickets to the appropriate team."
 )
 
+if PUBLIC_DEMO:
+    st.warning(
+        "Public portfolio demo: use fictional information only. "
+        "Tickets are visible to other visitors and may reset when "
+        "the demo service restarts. Live Claude calls are disabled."
+    )
+
 # Display confirmation after a successful action triggers a rerun.
 if "notice" in st.session_state:
     st.success(st.session_state.pop("notice"))
@@ -51,6 +68,8 @@ page = st.sidebar.radio(
 
 if st.sidebar.button("Refresh data"):
     st.rerun()
+
+st.sidebar.link_button("View source on GitHub", GITHUB_URL)
 
 
 if page == "Submit ticket":
@@ -291,70 +310,80 @@ Leave a ticket unassessed when essential impact information is missing.
 
         st.write(selected["text"])
 
-        st.subheader("AI second opinion")
-        st.caption(
-            "Optional: sends this ticket to Claude through your "
-            "university Portkey account. Uses your API balance. "
-            "A reviewer must confirm the final urgency."
-        )
-
-        api_key = st.text_input(
-            "Portkey API key",
-            type="password",
-            key="portkey_api_key",
-            help=(
-                "Held in this browser session's app state. "
-                "Not saved to the ticket database."
-            ),
-        )
-
         existing_suggestion = selected.get("ai_urgency_suggestion")
 
-        button_label = (
-            "Generate another AI suggestion"
-            if existing_suggestion
-            else "Get AI urgency suggestion"
-        )
+        st.subheader("AI second opinion")
 
-        if st.button(
-            button_label,
-            key=f"suggest_urgency_{selected_id}",
-            disabled=not api_key.strip(),
-        ):
-            try:
-                with st.spinner("Assessing urgency with Claude..."):
-                    suggestion = suggest_urgency(
-                        selected["text"],
-                        api_key,
-                    )
-            except ValueError:
-                st.error(
-                    "The input or model response failed validation. "
-                    "No suggestion was saved. Manual assessment is available."
-                )
-            except Exception:
-                st.error(
-                    "The AI request failed. No suggestion was saved. "
-                    "Manual assessment is available."
-                )
-            else:
+        if PUBLIC_DEMO:
+            st.info(
+                "Live Claude requests are disabled in the public demo. "
+                "The local version supports an optional Claude Haiku 4.5 "
+                "second opinion through an authorized Portkey account."
+            )
+        else:
+            st.caption(
+                "Optional: sends this ticket to Claude through your "
+                "university Portkey account. Uses your API balance. "
+                "A reviewer must confirm the final urgency."
+            )
+
+            api_key = st.text_input(
+                "Portkey API key",
+                type="password",
+                key="portkey_api_key",
+                help=(
+                    "Held in this browser session's app state. "
+                    "Not saved to the ticket database."
+                ),
+            )
+
+            button_label = (
+                "Generate another AI suggestion"
+                if existing_suggestion
+                else "Get AI urgency suggestion"
+            )
+
+            if st.button(
+                button_label,
+                key=f"suggest_urgency_{selected_id}",
+                disabled=not api_key.strip(),
+            ):
                 try:
-                    save_urgency_suggestion(
-                        selected_id,
-                        suggestion,
+                    with st.spinner("Assessing urgency with Claude..."):
+                        suggestion = suggest_urgency(
+                            selected["text"],
+                            api_key,
+                        )
+                except ValueError:
+                    st.error(
+                        "The input or model response failed validation. "
+                        "No suggestion was saved. Manual assessment is "
+                        "available."
                     )
                 except Exception:
                     st.error(
-                        "Claude returned a suggestion, but it could "
-                        "not be saved. The API request may have used credits."
+                        "The AI request failed. No suggestion was saved. "
+                        "Manual assessment is available."
                     )
-                    st.json(suggestion)
                 else:
-                    st.session_state["notice"] = (
-                        "AI suggestion saved. Confirm the urgency "
-                        "using the assessment form below."
-                    )
-                    st.rerun()
+                    try:
+                        save_urgency_suggestion(
+                            selected_id,
+                            suggestion,
+                        )
+                    except Exception:
+                        st.error(
+                            "Claude returned a suggestion, but it could "
+                            "not be saved. The API request may have used "
+                            "credits."
+                        )
+                        st.json(suggestion)
+                    else:
+                        st.session_state["notice"] = (
+                            "AI suggestion saved. Confirm the urgency "
+                            "using the assessment form below."
+                        )
+                        st.rerun()
 
         if existing_suggestion:
             suggested_level = (
